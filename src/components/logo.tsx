@@ -12,7 +12,7 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
     {...props}
     className={cn("text-primary", props.className)}
   >
-    <title>Virtual Vogue Logo</title>
+    <title>TryFit Logo</title>
     <path d="M14 3l-12 18h4l7 -12h-4l7 -6z" />
     <path d="M22 3l-12 18h4l7 -12h-4l7 -6z" />
   </svg>

@@ -48,7 +48,7 @@ const modelFormSchema = z.object({
 
 type ModelFormValues = z.infer<typeof modelFormSchema>;
 
-export default function VirtualVoguePage() {
+export default function TryFitPage() {
   const [clothingImage, setClothingImage] = useState<string | null>(null);
   const [clothingAnalysis, setClothingAnalysis] = useState<AnalyzeClothingImageOutput | null>(null);
   
@@ -152,7 +152,7 @@ export default function VirtualVoguePage() {
     if (!compositeImage) return;
     const link = document.createElement('a');
     link.href = compositeImage;
-    link.download = 'virtual-vogue-try-on.png';
+    link.download = 'tryfit-try-on.png';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -165,7 +165,7 @@ export default function VirtualVoguePage() {
           <div className="flex items-center gap-3">
             <Logo className="h-8 w-8 text-primary" />
             <h1 className="font-headline text-2xl font-bold text-primary">
-              Virtual Vogue
+              TryFit
             </h1>
           </div>
         </div>
@@ -362,7 +362,7 @@ export default function VirtualVoguePage() {
 
       <footer className="py-6 border-t">
         <div className="container mx-auto text-center text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Virtual Vogue. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} TryFit. All Rights Reserved.</p>
         </div>
       </footer>
     </div>
