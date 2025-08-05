@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "TryFit",
-  description: "AI-powered virtual try-on.",
+  title: "TryFit - AI Virtual Try-On",
+  description: "AI-powered virtual try-on technology. Upload clothing, generate AI models, and create stunning virtual photoshoots.",
 };
 
 export default function RootLayout({

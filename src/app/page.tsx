@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,6 +61,34 @@ export default function TryFitPage() {
     generatingModel: false,
     compositing: false,
   });
+
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Ensure hydration is complete before calculating disabled states
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  // Use useMemo to prevent unnecessary recalculations and ensure consistent values
+  const isCreateTryOnDisabled = useMemo(() => {
+    if (!isHydrated) return true; // Default to disabled during SSR
+    return !clothingImage || !modelImage || loadingStates.compositing;
+  }, [isHydrated, clothingImage, modelImage, loadingStates.compositing]);
+
+  const isDownloadDisabled = useMemo(() => {
+    if (!isHydrated) return true; // Default to disabled during SSR
+    return !compositeImage;
+  }, [isHydrated, compositeImage]);
+
+  const isFileInputDisabled = useMemo(() => {
+    if (!isHydrated) return false; // Default to enabled during SSR
+    return loadingStates.analyzing;
+  }, [isHydrated, loadingStates.analyzing]);
+
+  const isGenerateModelDisabled = useMemo(() => {
+    if (!isHydrated) return false; // Default to enabled during SSR
+    return loadingStates.generatingModel;
+  }, [isHydrated, loadingStates.generatingModel]);
 
   const { toast } = useToast();
 
@@ -214,7 +242,7 @@ export default function TryFitPage() {
                 <Button asChild className="w-full cursor-pointer">
                   <span><Upload className="mr-2 h-4 w-4" /> Choose File</span>
                 </Button>
-                <Input id="clothing-upload" type="file" className="sr-only" accept="image/*" onChange={handleFileChange} disabled={loadingStates.analyzing} />
+                <Input id="clothing-upload" type="file" className="sr-only" accept="image/*" onChange={handleFileChange} disabled={isFileInputDisabled} suppressHydrationWarning />
               </Label>
               {clothingAnalysis && (
                 <div className="text-left w-full space-y-2 pt-4">
@@ -307,7 +335,7 @@ export default function TryFitPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full" disabled={loadingStates.generatingModel}>
+                  <Button type="submit" className="w-full" disabled={isGenerateModelDisabled} suppressHydrationWarning>
                     {loadingStates.generatingModel ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
                     Generate AI Model
                   </Button>
@@ -346,13 +374,13 @@ export default function TryFitPage() {
                   </div>
                 )}
               </div>
-              <Button onClick={handleCreateTryOn} className="w-full" disabled={!clothingImage || !modelImage || loadingStates.compositing}>
+              <Button onClick={handleCreateTryOn} className="w-full" disabled={isCreateTryOnDisabled} suppressHydrationWarning>
                 {loadingStates.compositing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
                 Create Virtual Try-On
               </Button>
             </CardContent>
             <CardFooter>
-              <Button onClick={downloadImage} variant="outline" className="w-full" disabled={!compositeImage}>
+              <Button onClick={downloadImage} variant="outline" className="w-full" disabled={isDownloadDisabled} suppressHydrationWarning>
                 <Download className="mr-2 h-4 w-4" /> Download Image
               </Button>
             </CardFooter>
