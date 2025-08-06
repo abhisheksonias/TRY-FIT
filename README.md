@@ -4,7 +4,8 @@ TryFit is an AI-powered virtual try-on web application that allows users to uplo
 
 ## Features
 - **AI Virtual Try-On:** Upload clothing images and generate realistic AI models wearing the selected items.
-- **AI Model Generation:** Customize model pose, body type, and skin tone for personalized results.
+- **AI Model Generation:** Customize model gender, pose, body type, and skin tone for personalized results.
+- **Smart Gender Detection:** Automatically detects whether clothing is for male or female models.
 - **Clothing Analysis:** Analyze uploaded clothing images for better AI compositing.
 - **Download Results:** Save your virtual try-on images for sharing or further use.
 - **Modern UI:** Responsive, clean, and user-friendly interface built with Tailwind CSS and Radix UI components.
@@ -58,7 +59,8 @@ TRY-FIT/
 
 ## Usage Guide
 - **Upload Clothing:** Use the UI to upload an image of clothing.
-- **Customize Model:** Select pose, body type, and skin tone.
+- **Auto-Gender Detection:** The system will automatically suggest male/female model based on clothing style.
+- **Customize Model:** Select or adjust gender, pose, body type, and skin tone.
 - **Generate Model:** Click to generate an AI model wearing the clothing.
 - **Create Try-On:** Composite the clothing onto the model and view the result.
 - **Download Image:** Save your virtual try-on image.

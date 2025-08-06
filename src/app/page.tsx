@@ -41,6 +41,7 @@ import { Badge } from "@/components/ui/badge";
 import { Upload, Sparkles, Shirt, Download, Loader2 } from "lucide-react";
 
 const modelFormSchema = z.object({
+  gender: z.string().min(1, "Please select a gender."),
   pose: z.string().min(1, "Please select a pose."),
   bodyType: z.string().min(1, "Please select a body type."),
   skinTone: z.string().min(1, "Please specify a skin tone."),
@@ -95,6 +96,7 @@ export default function TryFitPage() {
   const modelForm = useForm<ModelFormValues>({
     resolver: zodResolver(modelFormSchema),
     defaultValues: {
+      gender: "female",
       pose: "standing confidently, hands on hips",
       bodyType: "athletic build",
       skinTone: "light brown skin",
@@ -113,6 +115,11 @@ export default function TryFitPage() {
       setClothingImage(dataUri);
       const analysisResult = await analyzeClothingImage({ photoDataUri: dataUri });
       setClothingAnalysis(analysisResult);
+      
+      // Auto-set gender based on clothing analysis
+      if (analysisResult.suggestedGender === "male" || analysisResult.suggestedGender === "female") {
+        modelForm.setValue("gender", analysisResult.suggestedGender);
+      }
     } catch (error) {
       console.error("Error analyzing image:", error);
       toast({
@@ -131,7 +138,7 @@ export default function TryFitPage() {
     setModelImage(null);
     setCompositeImage(null);
     try {
-      const description = `A full-body studio portrait of a female model with ${values.skinTone} and an ${values.bodyType}. The model is ${values.pose}. The background is plain white.`;
+      const description = `A full-body studio portrait of a ${values.gender} model with ${values.skinTone} and an ${values.bodyType}. The model is ${values.pose}. The background is plain white.`;
       const result = await generateAiModel({ description });
       setModelImage(result.modelImage);
     } catch (error) {
@@ -248,6 +255,7 @@ export default function TryFitPage() {
                 <div className="text-left w-full space-y-2 pt-4">
                   <h4 className="font-semibold">Analysis Results:</h4>
                   <p><span className="font-medium">Type:</span> {clothingAnalysis.garmentType}</p>
+                  <p><span className="font-medium">Suggested Gender:</span> {clothingAnalysis.suggestedGender}</p>
                   <div className="flex flex-wrap gap-2">
                     {clothingAnalysis.clothingFeatures.map(feature => (
                       <Badge key={feature} variant="secondary">{feature}</Badge>
@@ -292,6 +300,27 @@ export default function TryFitPage() {
                 <form onSubmit={modelForm.handleSubmit(handleGenerateModel)} className="w-full space-y-4">
                   <FormField
                     control={modelForm.control}
+                    name="gender"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Gender</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select gender" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="female">Female</SelectItem>
+                            <SelectItem value="male">Male</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={modelForm.control}
                     name="pose"
                     render={({ field }) => (
                       <FormItem>
@@ -329,6 +358,29 @@ export default function TryFitPage() {
                             <SelectItem value="dark chocolate skin">Dark Chocolate</SelectItem>
                             <SelectItem value="pale ivory skin">Pale Ivory</SelectItem>
                             <SelectItem value="olive skin">Olive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={modelForm.control}
+                    name="bodyType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Body Type</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select body type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="athletic build">Athletic</SelectItem>
+                            <SelectItem value="slim build">Slim</SelectItem>
+                            <SelectItem value="average build">Average</SelectItem>
+                            <SelectItem value="muscular build">Muscular</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />

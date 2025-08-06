@@ -24,6 +24,7 @@ export type AnalyzeClothingImageInput = z.infer<typeof AnalyzeClothingImageInput
 const AnalyzeClothingImageOutputSchema = z.object({
   garmentType: z.string().describe('The type of garment (e.g., dress, shirt, pants).'),
   clothingFeatures: z.array(z.string()).describe('Key features and details of the garment (e.g., color, pattern, neckline).'),
+  suggestedGender: z.string().describe('The suggested gender for the model based on the clothing style (male, female, or unisex).'),
 });
 export type AnalyzeClothingImageOutput = z.infer<typeof AnalyzeClothingImageOutputSchema>;
 
@@ -38,8 +39,13 @@ const prompt = ai.definePrompt({
   prompt: `You are an AI expert in fashion and image recognition. Your task is to analyze the clothing item in the provided image and identify its key features and details.
 
   Specifically, extract the following information:
-  - Garment Type: Determine the type of garment (e.g., dress, shirt, pants, skirt).
+  - Garment Type: Determine the type of garment (e.g., dress, shirt, pants, skirt, blouse, trouser).
   - Clothing Features: Identify and list the key features and details of the garment, such as color, pattern, neckline, sleeve length, embellishments, and overall style.
+  - Suggested Gender: Based on the style, cut, and design of the clothing, suggest whether this is typically worn by males, females, or is unisex. Consider factors like:
+    * Dresses, skirts, blouses - typically female
+    * Men's trousers, suits, ties - typically male  
+    * T-shirts, jeans, sweaters - often unisex
+    * Consider the cut, fit, and styling details
 
   Here is the image of the clothing item:
   {{media url=photoDataUri}}
